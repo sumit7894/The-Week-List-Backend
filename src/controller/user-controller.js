@@ -48,8 +48,27 @@ const signIn = async(req,res)=>{
         })
     }
 }
+const health = async(req,res)=>{
+    try {
+        return res.status(201).json({
+            success:true,
+            serverName:"Week List",
+            currenTime: new Date(),
+            state:"Active"
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+        success:false,
+        message: error.message,
+        data:{},
+        err:error
+        })
+    }
+}
 
 module.exports ={
     signUp,
-    signIn
+    signIn,
+    health
 }
