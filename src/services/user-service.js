@@ -8,12 +8,12 @@ class UserService{
     }
     async create(data){
         try {
-            const user = await this.userRepository.create(data);
             const existingUser = await this.get({email: data.email});
+            console.log(existingUser);
             if(existingUser){
                 throw {error:'User with this email already exists'};
-                return
             }
+            const user = await this.userRepository.create(data);
             const token = await this.createToken({
                 email: data.email,
                 fullName:data.fullName

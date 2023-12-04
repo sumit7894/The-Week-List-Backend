@@ -24,7 +24,12 @@ const userSchema = new mongoose.Schema({
     mobile:{
         type:Number,
         required:true
-    }
+    },
+    weeklists: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Weeklist',
+    }],
+
 },{timestamps:true})
 
 const User = mongoose.model('User',userSchema);

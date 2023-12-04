@@ -25,7 +25,27 @@ const createWeeklist = async(req,res)=>{
         })
     }
 }
+const deleteWeeklist = async(req,res)=>{
+    try {
+        const response = await weeklistService.destroy(req.params.id);
+        return res.status(201).json({
+            success: true,
+            message:"Successfully deleted the weeklist",
+            data:response,
+            err:{}
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            success:false,
+            message:"Failed to delte the weeklist",
+            data:{},
+            err:error
+        })
+    }
+}
 
 module.exports ={
-    createWeeklist
+    createWeeklist,
+    deleteWeeklist
 }

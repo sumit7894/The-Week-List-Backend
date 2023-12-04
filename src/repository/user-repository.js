@@ -22,6 +22,14 @@ class UserRespository{
             console.log("Somthing went wrong in the repository layer",error)
         }
     }
+    async getUserById(userId){
+        try {
+            const user = await User.findById(userId);
+            return user;
+        } catch (error) {
+            console.log("Somthing went wrong in user repo");
+        }
+    }
 }
 
 module.exports = UserRespository;
