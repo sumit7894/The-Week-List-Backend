@@ -1,5 +1,7 @@
 const WeeklistRepository = require('../repository/weeklist-repository');
 const UserRespository = require('../repository/user-repository');
+const Weeklist = require('../models/weeklist');
+const moment = require('moment');
 class WeeklistService{
     constructor(){
         this.weeklistRepository = new WeeklistRepository();
@@ -27,15 +29,36 @@ class WeeklistService{
             console.log("Somthing went wrong in the service layer in elegible fxn");
         }
     }
-    async destroy(userId){
+    async destroy(weeklistId){
         try {
-            await this.weeklistRepository.delete(userId);
+            const weeklist = await this.getWeeklist(weeklistId);
+            const timeDifference = await this.findTimeDifference(weeklist.createdAt);
+            if(timeDifference > 24){
+                console.log("Sorry, you can't delete the weeklist after 24hrs");
+                return;
+            }
+            await this.weeklistRepository.delete(weeklistId);
         } catch (error) {
             console.log("Somthing went wrong in the service layer");
         }
     }
+    async getWeeklist(weeklistId){
+        try {
+            const weeklist = await Weeklist.findById(weeklistId);
+            return weeklist;
+        } catch (error) {
+            console.log(error);
+            console.log("Somthing went wrong in the weeklist-service");
+        }
+    }
     async updateTask(data){
         try {
+            const weeklist = await this.getWeeklist(data.weeklistId);
+            const timeDifference = await this.findTimeDifference(weeklist.createdAt);
+            if(timeDifference > 24){
+                console.log("No updation can be made after 24hrs");
+                return;
+            }
             const updatedTask = await this.weeklistRepository.updateTask(data);
             return updatedTask;
         } catch (error) {
@@ -45,11 +68,22 @@ class WeeklistService{
     }
     async deleteTask(data){
         try {
+            const weeklist = await this.getWeeklist(data.weeklistId);
+            const timeDifference =await  this.findTimeDifference(weeklist.createdAt);
+            if(timeDifference > 24){
+                console.log("No updation can be made after 24hrs");
+                throw error;
+            }
             await this.weeklistRepository.deleteTask(data);
         } catch (error) {
             console.log("Somthing went wrong in the weeklist service layer");
             console.log(error);
         }
+    }
+    async findTimeDifference(createdAt){
+        const creationTime = moment.utc(createdAt);
+        const currentTime = moment.utc(new Date());
+        return currentTime.diff(creationTime,'hours');
     }
 }
 
