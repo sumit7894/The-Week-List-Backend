@@ -92,9 +92,28 @@ const deleteTask = async(req,res)=>{
         })
     }
 }
+const getAllWeeklist = async(req,res)=>{
+    try {
+    const response = await weeklistService.getAllWeeklist();
+    return res.status(201).json({
+    success:true,
+    message:"Successflly fetched all the weeklists",
+    data:response,
+    err:{}
+    })
+    } catch (error) {
+    return res.status(500).json({
+        success:false,
+        message:"Failed to fetch all the weeklists",
+        data:{},
+        err:error
+    })
+    }
+}
 module.exports ={
     createWeeklist,
     deleteWeeklist,
     updateTask,
-    deleteTask
+    deleteTask,
+    getAllWeeklist
 }

@@ -31,7 +31,7 @@ class WeeklistService{
     }
     async destroy(weeklistId){
         try {
-            const weeklist = await this.getWeeklist(weeklistId);
+            const weeklist = await this.weeklistRepository.getWeeklist(weeklistId);
             const timeDifference = await this.findTimeDifference(weeklist.createdAt);
             if(timeDifference > 24){
                 console.log("Sorry, you can't delete the weeklist after 24hrs");
@@ -42,18 +42,10 @@ class WeeklistService{
             console.log("Somthing went wrong in the service layer");
         }
     }
-    async getWeeklist(weeklistId){
-        try {
-            const weeklist = await Weeklist.findById(weeklistId);
-            return weeklist;
-        } catch (error) {
-            console.log(error);
-            console.log("Somthing went wrong in the weeklist-service");
-        }
-    }
+    
     async updateTask(data){
         try {
-            const weeklist = await this.getWeeklist(data.weeklistId);
+            const weeklist = await this.weeklistRepository.getWeeklist(data.weeklistId);
             const timeDifference = await this.findTimeDifference(weeklist.createdAt);
             if(timeDifference > 24){
                 console.log("No updation can be made after 24hrs");
@@ -68,7 +60,7 @@ class WeeklistService{
     }
     async deleteTask(data){
         try {
-            const weeklist = await this.getWeeklist(data.weeklistId);
+            const weeklist = await this.weeklistRepository.getWeeklist(data.weeklistId);
             const timeDifference =await  this.findTimeDifference(weeklist.createdAt);
             if(timeDifference > 24){
                 console.log("No updation can be made after 24hrs");
@@ -84,6 +76,25 @@ class WeeklistService{
         const creationTime = moment.utc(createdAt);
         const currentTime = moment.utc(new Date());
         return currentTime.diff(creationTime,'hours');
+    }
+    async getAllWeeklist(){
+        try {
+        const weeklists = await this.weeklistRepository.getAllWeeklist();
+        const allWeeklists =await  Promise.all(weeklists.map(async(weeklist)=>{
+        const timeDifference =await this.findTimeDifference(weeklist.createdAt);
+        const totalTime = 168
+        const remainingTime = Math.abs(timeDifference - totalTime)
+        const days = Math.floor(remainingTime/24);
+        const hours = remainingTime%24;
+        let payload = {...weeklist.toObject(),"Remaining Time":`${days} Days ${hours} Hours Left`}
+        return payload;
+        }))
+        return allWeeklists;
+        } 
+        catch (error) {
+            console.log("Somthing went wrong in the weeklist service");
+            console.log(error);
+        }
     }
 }
 

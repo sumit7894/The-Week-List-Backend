@@ -44,6 +44,7 @@ class WeeklistRepository{
             console.log(error);
         }
     }
+
     async deleteTask(data){
         try {
             await Weeklist.findByIdAndUpdate(data.weeklistId,
@@ -52,6 +53,23 @@ class WeeklistRepository{
             )
         } catch (error) {
             console.log("Somthing went wrong in the weeklist repo layer");
+            console.log(error);
+        }
+    }
+    async getWeeklist(weeklistId){
+        try {
+            const weeklist = await Weeklist.findById(weeklistId);
+            return weeklist;
+        } catch (error) {
+            console.log(error);
+            console.log("Somthing went wrong in the weeklist-service");
+        }
+    }
+    async getAllWeeklist(){
+        try {
+            return await Weeklist.find({},'name createdAt');
+        } catch (error) {
+            console.log("Somthing went wrong in the weeklist repo");
             console.log(error);
         }
     }

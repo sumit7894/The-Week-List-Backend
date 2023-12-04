@@ -9,7 +9,6 @@ class UserService{
     async create(data){
         try {
             const existingUser = await this.get({email: data.email});
-            console.log(existingUser);
             if(existingUser){
                 throw {error:'User with this email already exists'};
             }
