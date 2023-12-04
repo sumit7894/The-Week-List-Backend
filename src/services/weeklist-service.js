@@ -34,6 +34,23 @@ class WeeklistService{
             console.log("Somthing went wrong in the service layer");
         }
     }
+    async updateTask(data){
+        try {
+            const updatedTask = await this.weeklistRepository.updateTask(data);
+            return updatedTask;
+        } catch (error) {
+            console.log("Somthing went wrong in the weeklist service layer");
+            console.log(error);
+        }
+    }
+    async deleteTask(data){
+        try {
+            await this.weeklistRepository.deleteTask(data);
+        } catch (error) {
+            console.log("Somthing went wrong in the weeklist service layer");
+            console.log(error);
+        }
+    }
 }
 
 module.exports = WeeklistService;

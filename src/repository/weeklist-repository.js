@@ -27,6 +27,34 @@ class WeeklistRepository{
             console.log("Somthing went wrong");
         }
     }
+    async updateTask(data){
+        try {
+            const updatedTask = await Weeklist.findOneAndUpdate(
+                {_id: data.weeklistId,'tasks._id':data.taskId},
+                {
+                    $set:{
+                        'tasks.$.description':data.description,
+                    },
+                },
+                {new : true}
+            )
+            return updatedTask;
+        } catch (error) {
+            console.log("Somthing went wrong in the repo layer of weeklist");
+            console.log(error);
+        }
+    }
+    async deleteTask(data){
+        try {
+            await Weeklist.findByIdAndUpdate(data.weeklistId,
+            {$pull:{tasks:{_id:data.taskId}}},
+            {new : true}
+            )
+        } catch (error) {
+            console.log("Somthing went wrong in the weeklist repo layer");
+            console.log(error);
+        }
+    }
 }
 
 module.exports = WeeklistRepository;

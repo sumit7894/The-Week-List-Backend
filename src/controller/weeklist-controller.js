@@ -44,8 +44,57 @@ const deleteWeeklist = async(req,res)=>{
         })
     }
 }
-
+const updateTask = async(req,res)=>{
+    try {
+    const response = await weeklistService.updateTask(
+        {
+            weeklistId:req.body.weeklistId,
+            taskId:req.body.taskId,
+            description:req.body.description
+        })
+        return res.status(201).json({
+            success:true,
+            message:"Successfully updated the task",
+            data:response,
+            err:{}
+        })
+    } 
+    catch (error) 
+    {
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            message:"Failed to update the task",
+            data:{},
+            err:error
+        })
+    }
+}
+const deleteTask = async(req,res)=>{
+    try {
+        const response = await weeklistService.deleteTask({
+            weeklistId : req.body.weeklistId,
+            taskId:req.body.taskId
+        })
+        return res.status(201).json({
+            success:true,
+            message:"Successfully deleted the task",
+            data:response,
+            err:{}
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            message:"Failed to delete the task",
+            data:{},
+            err:error
+        })
+    }
+}
 module.exports ={
     createWeeklist,
-    deleteWeeklist
+    deleteWeeklist,
+    updateTask,
+    deleteTask
 }
